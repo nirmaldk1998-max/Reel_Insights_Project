@@ -18,3 +18,19 @@ try:
     st.metric("Total Movies Loaded", f"{len(movies_df):,}")
 except Exception as e:
     st.error(f"Database connection error: {e}")
+    # Add a simple chart to make the dashboard look awesome
+if 'movies_df' in locals() and not movies_df.empty:
+    st.subheader("📊 Top 10 Movies by Revenue")
+    
+    # Check if revenue and title columns exist
+    if 'title' in movies_df.columns and 'revenue' in movies_df.columns:
+        top_movies = movies_df.nlargest(10, 'revenue')
+        fig = px.bar(
+            top_movies, 
+            x='title', 
+            y='revenue', 
+            color='revenue',
+            title="Top 10 Highest Revenue Movies",
+            labels={'title': 'Movie Title', 'revenue': 'Revenue ($)'}
+        )
+        st.plotly_chart(fig, use_container_width=True)
